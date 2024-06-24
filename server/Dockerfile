@@ -2,7 +2,7 @@
 FROM node:14
 
 # Erstellen Sie ein Verzeichnis für die Anwendung
-WORKDIR /app
+WORKDIR /server
 
 # Kopieren Sie package.json und package-lock.json
 COPY package*.json ./
