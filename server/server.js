@@ -6,12 +6,8 @@ app.use(express.json());
 
 app.post('/check-answer', (req, res) => {
     const { question, answer } = req.body;
-    const correctAnswer = eval(question); // Achtung: eval() kann gefährlich sein, verwenden Sie es mit Vorsicht
-    if (answer === correctAnswer) {
-        res.json({ correct: true });
-    } else {
-        res.json({ correct: false });
-    }
+    const correctAnswer = eval(question.split(' ')[2] + question.split(' ')[3] + question.split(' ')[4]);
+    res.json({ correct: answer === correctAnswer });
 });
 
 app.listen(port, () => {

@@ -2,7 +2,7 @@
 FROM node:14
 
 # Erstellen Sie ein Verzeichnis für die Anwendung
-WORKDIR /server
+WORKDIR /app
 
 # Kopieren Sie package.json und package-lock.json
 COPY package*.json ./
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Starten Sie die Anwendung
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
