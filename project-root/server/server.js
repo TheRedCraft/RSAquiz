@@ -47,17 +47,33 @@ io.on('connection', (socket) => {
 
   socket.on('startQuiz', () => {
     const roomCode = Object.keys(socket.rooms).find(room => room !== socket.id);
+    if (!roomCode || !rooms[roomCode]) {
+      socket.emit('error', 'Raum nicht gefunden oder ungültig');
+      return;
+    }
     const question = rooms[roomCode].questions.shift();
+    if (!question) {
+      socket.emit('error', 'Keine Fragen mehr verfügbar');
+      return;
+    }
     io.to(roomCode).emit('question', question);
   });
 
   socket.on('submitAnswer', (answer) => {
     const roomCode = Object.keys(socket.rooms).find(room => room !== socket.id);
+    if (!roomCode || !rooms[roomCode]) {
+      socket.emit('error', 'Raum nicht gefunden oder ungültig');
+      return;
+    }
     const correctAnswer = rooms[roomCode].questions[0].answer;
     if (answer == correctAnswer) {
       rooms[roomCode].questions.shift();
       const nextQuestion = rooms[roomCode].questions[0];
-      io.to(roomCode).emit('question', nextQuestion);
+      if (nextQuestion) {
+        io.to(roomCode).emit('question', nextQuestion);
+      } else {
+        io.to(roomCode).emit('quizFinished', 'Das Quiz ist beendet');
+      }
     } else {
       socket.emit('error', 'Falsche Antwort');
     }

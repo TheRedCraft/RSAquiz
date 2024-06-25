@@ -61,3 +61,13 @@ document.getElementById('submit-answer-btn').addEventListener('click', () => {
   const answer = document.getElementById('answer').value;
   socket.emit('submitAnswer', answer);
 });
+
+socket.on('error', (message) => {
+  alert(message);
+});
+
+socket.on('quizFinished', (message) => {
+  alert(message);
+  document.getElementById('participant-view').style.display = 'none';
+  document.getElementById('leader-view').style.display = 'block';
+});
