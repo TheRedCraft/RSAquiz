@@ -27,6 +27,7 @@ io.on('connection', (socket) => {
     };
     socket.join(roomCode);
     socket.emit('roomCreated', roomCode);
+    console.log(`Raum erstellt: ${roomCode}`);
   });
 
   socket.on('joinRoom', ({ participantName, roomCode }) => {
@@ -40,6 +41,7 @@ io.on('connection', (socket) => {
       socket.join(roomCode);
       socket.emit('roomJoined', roomCode);
       io.to(roomCode).emit('participantJoined', rooms[roomCode].participants);
+      console.log(`Teilnehmer beigetreten: ${participantName} in Raum: ${roomCode}`);
     } else {
       socket.emit('error', 'Raum nicht gefunden');
     }
@@ -47,6 +49,7 @@ io.on('connection', (socket) => {
 
   socket.on('startQuiz', () => {
     const roomCode = Object.keys(socket.rooms).find(room => room !== socket.id);
+    console.log(`Start Quiz für Raum: ${roomCode}`);
     if (!roomCode || !rooms[roomCode]) {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
@@ -61,6 +64,7 @@ io.on('connection', (socket) => {
 
   socket.on('submitAnswer', (answer) => {
     const roomCode = Object.keys(socket.rooms).find(room => room !== socket.id);
+    console.log(`Antwort erhalten für Raum: ${roomCode}`);
     if (!roomCode || !rooms[roomCode]) {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
