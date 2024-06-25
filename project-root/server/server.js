@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
       }
       rooms[roomCode].participants.push({ id: socket.id, name: participantName });
       socket.join(roomCode);
+      socket.emit('roomJoined', roomCode);
       io.to(roomCode).emit('participantJoined', rooms[roomCode].participants);
     } else {
       socket.emit('error', 'Raum nicht gefunden');
