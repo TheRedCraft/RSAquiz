@@ -1,4 +1,5 @@
-const socket = io();
+const { Socket } = require("socket.io");
+
 
 document.getElementById('create-room-btn').addEventListener('click', () => {
   const leaderName = document.getElementById('leader-name').value;
