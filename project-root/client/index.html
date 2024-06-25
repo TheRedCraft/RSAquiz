@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathe Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Mathe Quiz</h1>
+    <div id="create-room">
+      <input type="text" id="leader-name" placeholder="Dein Name">
+      <button id="create-room-btn">Raum erstellen</button>
+    </div>
+    <div id="join-room" style="display: none;">
+      <input type="text" id="participant-name" placeholder="Dein Name">
+      <input type="text" id="room-code" placeholder="Raum Code">
+      <button id="join-room-btn">Raum beitreten</button>
+    </div>
+    <div id="leader-view" style="display: none;">
+      <h2>Teilnehmer</h2>
+      <ul id="participants-list"></ul>
+      <button id="start-quiz-btn">Quiz starten</button>
+    </div>
+    <div id="participant-view" style="display: none;">
+      <h2>Frage</h2>
+      <p id="question"></p>
+      <input type="text" id="answer" placeholder="Antwort">
+      <button id="submit-answer-btn">Antwort senden</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

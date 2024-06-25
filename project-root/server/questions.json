@@ -1,0 +1,5 @@
+[
+    { "question": "Was ist 2 + 2?", "answer": "4" },
+    { "question": "Was ist 3 * 3?", "answer": "9" },
+    { "question": "Was ist 10 / 2?", "answer": "5" }
+  ]
