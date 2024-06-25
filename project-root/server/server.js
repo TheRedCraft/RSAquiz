@@ -29,6 +29,11 @@ io.on('connection', (socket) => {
 
   socket.on('joinRoom', ({ participantName, roomCode }) => {
     if (rooms[roomCode]) {
+      const participant = rooms[roomCode].participants.find(p => p.id === socket.id);
+      if (participant) {
+        socket.emit('error', 'Du bist bereits in diesem Raum.');
+        return;
+      }
       rooms[roomCode].participants.push({ id: socket.id, name: participantName });
       socket.join(roomCode);
       io.to(roomCode).emit('participantJoined', rooms[roomCode].participants);

@@ -1,5 +1,6 @@
 // Initialisiere die Socket.io-Verbindung
 const socket = io();
+let currentRoom = null;
 
 document.getElementById('create-room-btn').addEventListener('click', () => {
   const leaderName = document.getElementById('leader-name').value;
@@ -7,12 +8,17 @@ document.getElementById('create-room-btn').addEventListener('click', () => {
 });
 
 document.getElementById('join-room-btn').addEventListener('click', () => {
+  if (currentRoom) {
+    alert('Du bist bereits einem Raum beigetreten.');
+    return;
+  }
   const participantName = document.getElementById('participant-name').value;
   const roomCode = document.getElementById('room-code').value;
   socket.emit('joinRoom', { participantName, roomCode });
 });
 
 socket.on('roomCreated', (roomCode) => {
+  currentRoom = roomCode;
   document.getElementById('create-room').style.display = 'none';
   document.getElementById('leader-view').style.display = 'block';
   alert(`Raum erstellt! Code: ${roomCode}`);
