@@ -16,6 +16,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  console.log('Ein Benutzer hat sich verbunden');
+
   socket.on('createRoom', (leaderName) => {
     const roomCode = Math.random().toString(36).substring(2, 7);
     rooms[roomCode] = {
@@ -59,6 +61,10 @@ io.on('connection', (socket) => {
     } else {
       socket.emit('error', 'Falsche Antwort');
     }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Ein Benutzer hat die Verbindung getrennt');
   });
 });
 
