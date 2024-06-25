@@ -1,3 +1,4 @@
+// Initialisiere die Socket.io-Verbindung
 const socket = io();
 
 document.getElementById('create-room-btn').addEventListener('click', () => {
