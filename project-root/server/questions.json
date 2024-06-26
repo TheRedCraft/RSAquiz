@@ -1,5 +1,70 @@
 [
-    { "question": "Was ist 2 + 2?", "answer": "4" },
-    { "question": "Was ist 3 * 3?", "answer": "9" },
-    { "question": "Was ist 10 / 2?", "answer": "5" }
-  ]
+  {
+    "question": "In welchem Jahr wurde der RSA-Algorithmus entwickelt?",
+    "answer": "1977"
+  },
+  {
+    "question": "Wie viele Primzahlen werden zur Generierung eines RSA-Schlüsselpaares benötigt?",
+    "answer": "2"
+  },
+  {
+    "question": "Wie viele Schlüssel werden bei der RSA-Verschlüsselung verwendet?",
+    "answer": "2"
+  },
+  {
+    "question": "Was ist die kleinste Primzahl, die für RSA verwendet werden kann?",
+    "answer": "2"
+  },
+  {
+    "question": "Wenn p = 3 und q = 11, was ist n?",
+    "answer": "33"
+  },
+  {
+    "question": "Wenn p = 3 und q = 11, was ist φ(n)?",
+    "answer": "20"
+  },
+  {
+    "question": "Wenn e = 7 und φ(n) = 20, was ist d?",
+    "answer": "3"
+  },
+  {
+    "question": "Wenn m = 2, e = 7 und n = 33, was ist c?",
+    "answer": "29"
+  },
+  {
+    "question": "Wenn c = 29, d = 3 und n = 33, was ist m?",
+    "answer": "2"
+  },
+  {
+    "question": "Wie viele Schritte sind erforderlich, um ein RSA-Schlüsselpaar zu generieren?",
+    "answer": "5"
+  },
+  {
+    "question": "Wie viele Schritte sind erforderlich, um eine Nachricht mit RSA zu verschlüsseln?",
+    "answer": "1"
+  },
+  {
+    "question": "Wie viele Schritte sind erforderlich, um eine verschlüsselte Nachricht mit RSA zu entschlüsseln?",
+    "answer": "1"
+  },
+  {
+    "question": "Wie viele Schlüssel werden bei der symmetrischen Verschlüsselung verwendet?",
+    "answer": "1"
+  },
+  {
+    "question": "Wie viele Schlüssel werden bei der asymmetrischen Verschlüsselung verwendet?",
+    "answer": "2"
+  },
+  {
+    "question": "Wie viele Primzahlen sind erforderlich, um n zu berechnen?",
+    "answer": "2"
+  },
+  {
+    "question": "Wie viele Primzahlen sind erforderlich, um φ(n) zu berechnen?",
+    "answer": "2"
+  },
+  {
+    "question": "Wie viele Zahlen sind teilerfremd zu φ(n), wenn e der öffentliche Exponent ist?",
+    "answer": "1"
+  }
+]
