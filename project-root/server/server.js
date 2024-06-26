@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
         socket.emit('error', 'Du bist bereits in diesem Raum.');
         return;
       }
-      rooms[roomCode].participants.push({ id: socket.id, name: participantName });
+      rooms[roomCode].participants.push({ id: socket.id, name: participantName, progress: 0 });
       socket.join(roomCode);
       socket.emit('roomJoined', roomCode);
       io.to(roomCode).emit('participantJoined', rooms[roomCode].participants);
@@ -55,12 +55,18 @@ io.on('connection', (socket) => {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
     }
-    const question = rooms[roomCode].questions.shift();
+    const participant = rooms[roomCode].participants.find(p => p.id === socket.id);
+    console.log(`Teilnehmer gefunden: ${JSON.stringify(participant)}`);
+    if (!participant) {
+      socket.emit('error', 'Teilnehmer nicht gefunden');
+      return;
+    }
+    const question = rooms[roomCode].questions[participant.progress];
     if (!question) {
       socket.emit('error', 'Keine Fragen mehr verfügbar');
       return;
     }
-    io.to(roomCode).emit('question', question);
+    socket.emit('question', question);
   });
 
   socket.on('submitAnswer', ({ answer, roomCode }) => {
@@ -69,14 +75,21 @@ io.on('connection', (socket) => {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
     }
-    const correctAnswer = rooms[roomCode].questions[0].answer;
+    const participant = rooms[roomCode].participants.find(p => p.id === socket.id);
+    console.log(`Teilnehmer gefunden: ${JSON.stringify(participant)}`);
+    if (!participant) {
+      socket.emit('error', 'Teilnehmer nicht gefunden');
+      return;
+    }
+    const correctAnswer = rooms[roomCode].questions[participant.progress].answer;
+    console.log(`Erwartete Antwort: ${correctAnswer}, Gegebene Antwort: ${answer}`);
     if (answer === correctAnswer) {
-      rooms[roomCode].questions.shift();
-      const nextQuestion = rooms[roomCode].questions[0];
+      participant.progress++;
+      const nextQuestion = rooms[roomCode].questions[participant.progress];
       if (nextQuestion) {
-        io.to(roomCode).emit('question', nextQuestion);
+        socket.emit('question', nextQuestion);
       } else {
-        io.to(roomCode).emit('quizFinished', 'Das Quiz ist beendet');
+        socket.emit('quizFinished', 'Das Quiz ist beendet');
       }
     } else {
       socket.emit('error', 'Falsche Antwort');
