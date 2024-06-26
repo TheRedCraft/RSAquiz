@@ -50,6 +50,7 @@ io.on('connection', (socket) => {
   socket.on('startQuiz', () => {
     const roomCode = Object.keys(socket.rooms).find(room => room !== socket.id);
     console.log(`Start Quiz für Raum: ${roomCode}`);
+    console.log(`Verfügbare Räume: ${JSON.stringify(rooms)}`);
     if (!roomCode || !rooms[roomCode]) {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
