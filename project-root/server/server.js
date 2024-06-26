@@ -63,15 +63,14 @@ io.on('connection', (socket) => {
     io.to(roomCode).emit('question', question);
   });
 
-  socket.on('submitAnswer', (answer) => {
-    const roomCode = Array.from(socket.rooms).find(room => room !== socket.id);
+  socket.on('submitAnswer', ({ answer, roomCode }) => {
     console.log(`Antwort erhalten für Raum: ${roomCode}`);
     if (!roomCode || !rooms[roomCode]) {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
     }
     const correctAnswer = rooms[roomCode].questions[0].answer;
-    if (answer == correctAnswer) {
+    if (answer === correctAnswer) {
       rooms[roomCode].questions.shift();
       const nextQuestion = rooms[roomCode].questions[0];
       if (nextQuestion) {

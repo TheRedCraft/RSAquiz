@@ -64,7 +64,7 @@ socket.on('question', (question) => {
 
 document.getElementById('submit-answer-btn').addEventListener('click', () => {
   const answer = document.getElementById('answer').value;
-  socket.emit('submitAnswer', answer);
+  socket.emit('submitAnswer', { answer, roomCode: currentRoom });
   console.log('Antwort gesendet');
 });
 
