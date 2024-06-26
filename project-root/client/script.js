@@ -93,7 +93,12 @@ socket.on('error', (message) => {
 socket.on('quizFinished', (message) => {
   alert(message);
   document.getElementById('participant-view').style.display = 'none';
+  document.getElementById('waiting-screen').style.display = 'block';
   console.log('Quiz beendet');
+  stopTimer();
+  setTimeout(() => {
+    socket.emit('checkAllFinished', currentRoom);
+  }, 10000); // 10 Sekunden warten, bevor die Siegerehrung stattfindet
 });
 
 socket.on('update', (participants) => {
@@ -163,6 +168,12 @@ function startTimer() {
   }, 1000);
 }
 
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+}
+
 function showFeedback(message, type) {
   const feedbackElement = document.createElement('div');
   feedbackElement.className = `feedback ${type}`;
@@ -171,4 +182,35 @@ function showFeedback(message, type) {
   setTimeout(() => {
     feedbackElement.remove();
   }, 3000); // Feedback nach 3 Sekunden entfernen
+}
+
+function checkAllParticipantsFinished() {
+  socket.emit('checkAllFinished', currentRoom);
+}
+
+socket.on('allParticipantsFinished', () => {
+  document.getElementById('waiting-screen').style.display = 'none';
+  showPodium();
+});
+
+function showPodium() {
+  const podium = document.getElementById('podium');
+  podium.style.display = 'block';
+
+  const participants = Array.from(document.getElementById('participants-list').children);
+  const sortedParticipants = participants.sort((a, b) => {
+    const accuracyA = parseFloat(a.textContent.split(' - Genauigkeit: ')[1].replace('%', ''));
+    const accuracyB = parseFloat(b.textContent.split(' - Genauigkeit: ')[1].replace('%', ''));
+    return accuracyB - accuracyA;
+  });
+
+  if (sortedParticipants[0]) {
+    document.getElementById('first-place').textContent = `1. Platz: ${sortedParticipants[0].textContent.split(' - ')[0]}`;
+  }
+  if (sortedParticipants[1]) {
+    document.getElementById('second-place').textContent = `2. Platz: ${sortedParticipants[1].textContent.split(' - ')[0]}`;
+  }
+  if (sortedParticipants[2]) {
+    document.getElementById('third-place').textContent = `3. Platz: ${sortedParticipants[2].textContent.split(' - ')[0]}`;
+  }
 }

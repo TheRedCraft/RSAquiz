@@ -97,12 +97,22 @@ io.on('connection', (socket) => {
         io.to(socket.id).emit('question', nextQuestion);
       } else {
         io.to(socket.id).emit('quizFinished', 'Das Quiz ist beendet');
+        checkAllParticipantsFinished(roomCode);
       }
     } else {
       participant.incorrectAnswers++;
       socket.emit('incorrectAnswer');
     }
     io.to(roomCode).emit('participantJoined', rooms[roomCode].participants); // Update leader with progress
+  });
+
+  socket.on('endQuiz', (roomCode) => {
+    if (rooms[roomCode]) {
+      io.to(roomCode).emit('quizFinished', 'Das Quiz wurde vom Leiter beendet');
+      setTimeout(() => {
+        checkAllParticipantsFinished(roomCode);
+      }, 10000); // 10 Sekunden warten, bevor die Siegerehrung stattfindet
+    }
   });
 
   socket.on('requestUpdate', (roomCode) => {
@@ -115,6 +125,14 @@ io.on('connection', (socket) => {
     console.log('Ein Benutzer hat die Verbindung getrennt');
   });
 });
+
+function checkAllParticipantsFinished(roomCode) {
+  const room = rooms[roomCode];
+  const allFinished = room.participants.every(p => p.progress >= room.questions.length);
+  if (allFinished) {
+    io.to(roomCode).emit('allParticipantsFinished');
+  }
+}
 
 server.listen(3000, () => {
   console.log('Server läuft auf Port 3000');

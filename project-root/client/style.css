@@ -119,3 +119,30 @@ button:hover {
 .feedback.error {
   background-color: #dc3545;
 }
+
+#waiting-screen {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#podium {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.place {
+  font-size: 1.5em;
+  margin: 10px 0;
+  animation: rise 1s ease-in-out;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
