@@ -58,7 +58,7 @@ document.getElementById('start-quiz-btn').addEventListener('click', () => {
 socket.on('question', (question) => {
   document.getElementById('leader-view').style.display = 'none';
   document.getElementById('participant-view').style.display = 'block';
-  document.getElementById('question').textContent = question;
+  document.getElementById('question').textContent = question.question; // Hier wird die Frage als Text angezeigt
   console.log('Frage erhalten');
 });
 
