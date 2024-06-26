@@ -91,6 +91,7 @@ io.on('connection', (socket) => {
     if (answer === correctAnswer) {
       participant.correctAnswers++;
       participant.progress++;
+      socket.emit('correctAnswer');
       const nextQuestion = room.questions[participant.progress];
       if (nextQuestion) {
         io.to(socket.id).emit('question', nextQuestion);
@@ -98,8 +99,8 @@ io.on('connection', (socket) => {
         io.to(socket.id).emit('quizFinished', 'Das Quiz ist beendet');
       }
     } else {
-      participant.incorrectAnswers++; // Falsche Antwort zählen
-      io.to(socket.id).emit('incorrectAnswer');
+      participant.incorrectAnswers++;
+      socket.emit('incorrectAnswer');
     }
     io.to(roomCode).emit('participantJoined', rooms[roomCode].participants); // Update leader with progress
   });

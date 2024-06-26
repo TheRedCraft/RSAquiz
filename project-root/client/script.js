@@ -2,6 +2,7 @@ const socket = io();
 let currentRoom = null;
 let isLeader = false;
 let quizStartTime = null;
+let timerInterval = null;
 
 document.getElementById('create-room-btn').addEventListener('click', () => {
   const leaderName = document.getElementById('leader-name').value;
@@ -45,15 +46,7 @@ socket.on('roomJoined', (roomCode) => {
 });
 
 socket.on('participantJoined', (participants) => {
-  const participantsList = document.getElementById('participants-list');
-  participantsList.innerHTML = '';
-  participants.forEach(participant => {
-    const totalAnswers = participant.correctAnswers + participant.incorrectAnswers;
-    const accuracy = totalAnswers > 0 ? ((participant.correctAnswers / totalAnswers) * 100).toFixed(2) : 0;
-    const li = document.createElement('li');
-    li.textContent = `${participant.name} - Frage: ${participant.progress} - Richtige Antworten: ${participant.correctAnswers} - Falsche Antworten: ${participant.incorrectAnswers} - Genauigkeit: ${accuracy}%`;
-    participantsList.appendChild(li);
-  });
+  updateParticipantsList(participants);
   if (isLeader) {
     updateLeaderView(participants);
   }
@@ -63,6 +56,7 @@ socket.on('participantJoined', (participants) => {
 document.getElementById('start-quiz-btn').addEventListener('click', () => {
   socket.emit('startQuiz');
   quizStartTime = Date.now();
+  startTimer();
   console.log('Quiz gestartet');
 });
 
@@ -75,9 +69,20 @@ socket.on('question', (question) => {
 });
 
 document.getElementById('submit-answer-btn').addEventListener('click', () => {
-  const answer = document.getElementById('answer').value;
+  const answerInput = document.getElementById('answer');
+  const answer = answerInput.value;
   socket.emit('submitAnswer', { answer, roomCode: currentRoom });
+  answerInput.value = ''; // Eingabefeld zurücksetzen
   console.log('Antwort gesendet');
+});
+
+socket.on('correctAnswer', () => {
+  showFeedback('Richtige Antwort!', 'success');
+  socket.emit('nextQuestion', currentRoom);
+});
+
+socket.on('incorrectAnswer', () => {
+  showFeedback('Falsche Antwort!', 'error');
 });
 
 socket.on('error', (message) => {
@@ -97,27 +102,38 @@ socket.on('update', (participants) => {
   }
 });
 
-socket.on('incorrectAnswer', () => {
-  if (isLeader) {
-    socket.emit('requestUpdate', currentRoom);
-  }
-});
-
 setInterval(() => {
   if (isLeader) {
     socket.emit('requestUpdate', currentRoom);
   }
 }, 1000);
 
-function updateLeaderView(participants) {
+function updateParticipantsList(participants) {
   const participantsList = document.getElementById('participants-list');
+  participantsList.innerHTML = '';
+  participants.forEach(participant => {
+    const totalAnswers = participant.correctAnswers + participant.incorrectAnswers;
+    const accuracy = totalAnswers > 0 ? ((participant.correctAnswers / totalAnswers) * 100).toFixed(2) : 0;
+    const li = document.createElement('li');
+    li.textContent = `${participant.name} - Frage: ${participant.progress} - Richtige Antworten: ${participant.correctAnswers} - Falsche Antworten: ${participant.incorrectAnswers} - Genauigkeit: ${accuracy}%`;
+    participantsList.appendChild(li);
+  });
+}
+
+function updateLeaderView(participants) {
+  // Sortiere die Teilnehmer nach ihrer Genauigkeit
+  participants.sort((a, b) => {
+    const accuracyA = a.correctAnswers / (a.correctAnswers + a.incorrectAnswers || 1);
+    const accuracyB = b.correctAnswers / (b.correctAnswers + b.incorrectAnswers || 1);
+    return accuracyB - accuracyA; // Absteigend sortieren
+  });
+
+  updateParticipantsList(participants);
 
   const totalProgress = participants.reduce((sum, p) => sum + p.progress, 0);
   const totalIncorrectAnswers = participants.reduce((sum, p) => sum + p.incorrectAnswers, 0);
-  const totalAnswers1 = participants.reduce((sum, p) => sum + p.correctAnswers, 0);
-
-
-  const averageAccuracy = totalProgress + totalIncorrectAnswers > 0 ? ((totalAnswers1 / (totalProgress + totalIncorrectAnswers)) * 100).toFixed(2) : 0;
+  const totalAnswers = participants.reduce((sum, p) => sum + p.correctAnswers, 0);
+  const averageAccuracy = totalProgress + totalIncorrectAnswers > 0 ? ((totalAnswers / (totalProgress + totalIncorrectAnswers)) * 100).toFixed(2) : 0;
 
   document.getElementById('average-accuracy').textContent = `Durchschnittliche Genauigkeit: ${averageAccuracy}%`;
 
@@ -126,16 +142,6 @@ function updateLeaderView(participants) {
     document.getElementById('elapsed-time').textContent = `Verstrichene Zeit: ${elapsedTime} Sekunden`;
   }
 
-  participantsList.innerHTML = '';
-  participants.forEach(participant => {
-    const totalAnswers = participant.correctAnswers + participant.incorrectAnswers;
-    const accuracy = totalAnswers > 0 ? ((participant.correctAnswers / totalAnswers) * 100).toFixed(2) : 0;
-  
-    const li = document.createElement('li');
-    li.textContent = `${participant.name} - Frage: ${participant.progress} - Richtige Antworten: ${participant.correctAnswers} - Falsche Antworten: ${participant.incorrectAnswers} - Genauigkeit: ${accuracy}%`;
-    participantsList.appendChild(li);
-  });
-
   if (isLeader) {
     document.getElementById('leader-view').style.display = 'block';
     document.getElementById('start-quiz-btn').style.display = 'block';
@@ -143,4 +149,26 @@ function updateLeaderView(participants) {
     document.getElementById('leader-view').style.display = 'none';
     document.getElementById('start-quiz-btn').style.display = 'none';
   }
+}
+
+function startTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  timerInterval = setInterval(() => {
+    if (quizStartTime) {
+      const elapsedTime = Math.floor((Date.now() - quizStartTime) / 1000);
+      document.getElementById('elapsed-time').textContent = `Verstrichene Zeit: ${elapsedTime} Sekunden`;
+    }
+  }, 1000);
+}
+
+function showFeedback(message, type) {
+  const feedbackElement = document.createElement('div');
+  feedbackElement.className = `feedback ${type}`;
+  feedbackElement.textContent = message;
+  document.body.appendChild(feedbackElement);
+  setTimeout(() => {
+    feedbackElement.remove();
+  }, 3000); // Feedback nach 3 Sekunden entfernen
 }
