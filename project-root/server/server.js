@@ -23,7 +23,8 @@ io.on('connection', (socket) => {
     rooms[roomCode] = {
       leader: { id: socket.id, name: leaderName },
       participants: [],
-      questions: JSON.parse(fs.readFileSync('server/questions.json'))
+      questions: JSON.parse(fs.readFileSync('server/questions.json')),
+      startTime: null
     };
     socket.join(roomCode);
     socket.emit('roomCreated', roomCode);
@@ -37,7 +38,7 @@ io.on('connection', (socket) => {
         socket.emit('error', 'Du bist bereits in diesem Raum.');
         return;
       }
-      rooms[roomCode].participants.push({ id: socket.id, name: participantName, progress: 0 });
+      rooms[roomCode].participants.push({ id: socket.id, name: participantName, progress: 0, correctAnswers: 0, incorrectAnswers: 0 });
       socket.join(roomCode);
       socket.emit('roomJoined', roomCode);
       io.to(roomCode).emit('participantJoined', rooms[roomCode].participants);
@@ -50,23 +51,22 @@ io.on('connection', (socket) => {
   socket.on('startQuiz', () => {
     const roomCode = Array.from(socket.rooms).find(room => room !== socket.id);
     console.log(`Start Quiz für Raum: ${roomCode}`);
-    console.log(`Verfügbare Räume: ${JSON.stringify(rooms)}`);
     if (!roomCode || !rooms[roomCode]) {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
     }
-    const participant = rooms[roomCode].participants.find(p => p.id === socket.id);
-    console.log(`Teilnehmer gefunden: ${JSON.stringify(participant)}`);
-    if (!participant) {
-      socket.emit('error', 'Teilnehmer nicht gefunden');
+    const room = rooms[roomCode];
+    if (room.leader.id !== socket.id) {
+      socket.emit('error', 'Nur der Raumleiter kann das Quiz starten');
       return;
     }
-    const question = rooms[roomCode].questions[participant.progress];
+    room.startTime = Date.now();
+    const question = room.questions[0];
     if (!question) {
-      socket.emit('error', 'Keine Fragen mehr verfügbar');
+      socket.emit('error', 'Keine Fragen verfügbar');
       return;
     }
-    socket.emit('question', question);
+    io.to(roomCode).emit('question', question);
   });
 
   socket.on('submitAnswer', ({ answer, roomCode }) => {
@@ -75,24 +75,38 @@ io.on('connection', (socket) => {
       socket.emit('error', 'Raum nicht gefunden oder ungültig');
       return;
     }
-    const participant = rooms[roomCode].participants.find(p => p.id === socket.id);
+    const room = rooms[roomCode];
+    if (room.leader.id === socket.id) {
+      socket.emit('error', 'Der Raumleiter kann keine Antworten einreichen');
+      return;
+    }
+    const participant = room.participants.find(p => p.id === socket.id);
     console.log(`Teilnehmer gefunden: ${JSON.stringify(participant)}`);
     if (!participant) {
       socket.emit('error', 'Teilnehmer nicht gefunden');
       return;
     }
-    const correctAnswer = rooms[roomCode].questions[participant.progress].answer;
+    const correctAnswer = room.questions[participant.progress].answer;
     console.log(`Erwartete Antwort: ${correctAnswer}, Gegebene Antwort: ${answer}`);
     if (answer === correctAnswer) {
+      participant.correctAnswers++;
       participant.progress++;
-      const nextQuestion = rooms[roomCode].questions[participant.progress];
+      const nextQuestion = room.questions[participant.progress];
       if (nextQuestion) {
-        socket.emit('question', nextQuestion);
+        io.to(socket.id).emit('question', nextQuestion);
       } else {
-        socket.emit('quizFinished', 'Das Quiz ist beendet');
+        io.to(socket.id).emit('quizFinished', 'Das Quiz ist beendet');
       }
     } else {
-      socket.emit('error', 'Falsche Antwort');
+      participant.incorrectAnswers++; // Falsche Antwort zählen
+      io.to(socket.id).emit('incorrectAnswer');
+    }
+    io.to(roomCode).emit('participantJoined', rooms[roomCode].participants); // Update leader with progress
+  });
+
+  socket.on('requestUpdate', (roomCode) => {
+    if (rooms[roomCode]) {
+      socket.emit('update', rooms[roomCode].participants);
     }
   });
 

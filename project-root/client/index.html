@@ -21,11 +21,17 @@
     <div id="room-info" style="display: none;">
       <h2>Raum: <span id="room-name"></span></h2>
     </div>
-    <div id="leader-view" style="display: none;">
-      <h2>Teilnehmer</h2>
-      <ul id="participants-list"></ul>
-      <button id="start-quiz-btn">Quiz starten</button>
+    <div id="leader-view" style="display:none;">
+      <h2>Leader View</h2>
+      <div id="participants-list-container">
+        <h3>Teilnehmer:</h3>
+        <ul id="participants-list"></ul>
+      </div>
+      <p id="average-accuracy">Durchschnittliche Genauigkeit: 0%</p>
+      <p id="elapsed-time">Verstrichene Zeit: 0 Sekunden</p>
+      <button id="start-quiz-btn">Quiz Starten</button>
     </div>
+    
     <div id="participant-view" style="display: none;">
       <h2>Frage</h2>
       <p id="question"></p>
