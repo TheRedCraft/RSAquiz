@@ -63,7 +63,9 @@ document.getElementById('start-quiz-btn').addEventListener('click', () => {
 socket.on('question', (question) => {
   if (!isLeader) {
     document.getElementById('participant-view').style.display = 'block';
-    document.getElementById('question').textContent = question.question;
+    document.getElementById('question').innerHTML = question.explanation;
+    document.getElementById('question').innerHTML += "<br><br>" + question.question;
+
   }
   console.log('Frage erhalten');
 });

@@ -1,69 +1,86 @@
 [
   {
+    "explanation": "Der RSA-Algorithmus wurde von Ron Rivest, Adi Shamir und Leonard Adleman entwickelt.",
     "question": "In welchem Jahr wurde der RSA-Algorithmus entwickelt?",
     "answer": "1977"
   },
   {
+    "explanation": "Zur Generierung eines RSA-Schlüsselpaares werden zwei große Primzahlen benötigt.",
     "question": "Wie viele Primzahlen werden zur Generierung eines RSA-Schlüsselpaares benötigt?",
     "answer": "2"
   },
   {
+    "explanation": "RSA verwendet zwei Schlüssel: einen öffentlichen Schlüssel zum Verschlüsseln und einen privaten Schlüssel zum Entschlüsseln.",
     "question": "Wie viele Schlüssel werden bei der RSA-Verschlüsselung verwendet?",
     "answer": "2"
   },
   {
+    "explanation": "Die kleinste Primzahl ist 2, und sie kann für RSA verwendet werden, obwohl in der Praxis größere Primzahlen verwendet werden.",
     "question": "Was ist die kleinste Primzahl, die für RSA verwendet werden kann?",
     "answer": "2"
   },
   {
+    "explanation": "Um n zu berechnen, multiplizieren wir die beiden Primzahlen p und q.",
     "question": "Wenn p = 3 und q = 11, was ist n?",
     "answer": "33"
   },
   {
+    "explanation": "Die Eulersche Totientfunktion φ(n) wird berechnet als (p-1) * (q-1).",
     "question": "Wenn p = 3 und q = 11, was ist φ(n)?",
     "answer": "20"
   },
   {
+    "explanation": "Der private Exponent d wird so berechnet, dass (d * e) mod φ(n) = 1.",
     "question": "Wenn e = 7 und φ(n) = 20, was ist d?",
     "answer": "3"
   },
   {
+    "explanation": "Um eine Nachricht m zu verschlüsseln, berechnen wir den Chiffretext c = m^e mod n.",
     "question": "Wenn m = 2, e = 7 und n = 33, was ist c?",
     "answer": "29"
   },
   {
+    "explanation": "Um eine verschlüsselte Nachricht c zu entschlüsseln, berechnen wir die ursprüngliche Nachricht m = c^d mod n.",
     "question": "Wenn c = 29, d = 3 und n = 33, was ist m?",
     "answer": "2"
   },
   {
+    "explanation": "Die Generierung eines RSA-Schlüsselpaares umfasst mehrere Schritte, darunter die Auswahl von Primzahlen und die Berechnung von n, φ(n), e und d.",
     "question": "Wie viele Schritte sind erforderlich, um ein RSA-Schlüsselpaar zu generieren?",
     "answer": "5"
   },
   {
+    "explanation": "Die Verschlüsselung einer Nachricht mit RSA erfordert nur einen Schritt: die Berechnung von c = m^e mod n.",
     "question": "Wie viele Schritte sind erforderlich, um eine Nachricht mit RSA zu verschlüsseln?",
     "answer": "1"
   },
   {
+    "explanation": "Die Entschlüsselung einer verschlüsselten Nachricht mit RSA erfordert nur einen Schritt: die Berechnung von m = c^d mod n.",
     "question": "Wie viele Schritte sind erforderlich, um eine verschlüsselte Nachricht mit RSA zu entschlüsseln?",
     "answer": "1"
   },
   {
+    "explanation": "Bei der symmetrischen Verschlüsselung wird derselbe Schlüssel zum Verschlüsseln und Entschlüsseln verwendet.",
     "question": "Wie viele Schlüssel werden bei der symmetrischen Verschlüsselung verwendet?",
     "answer": "1"
   },
   {
+    "explanation": "Bei der asymmetrischen Verschlüsselung, wie RSA, werden zwei verschiedene Schlüssel verwendet: ein öffentlicher Schlüssel zum Verschlüsseln und ein privater Schlüssel zum Entschlüsseln.",
     "question": "Wie viele Schlüssel werden bei der asymmetrischen Verschlüsselung verwendet?",
     "answer": "2"
   },
   {
+    "explanation": "Um n zu berechnen, benötigen wir zwei Primzahlen, p und q.",
     "question": "Wie viele Primzahlen sind erforderlich, um n zu berechnen?",
     "answer": "2"
   },
   {
+    "explanation": "Um φ(n) zu berechnen, benötigen wir zwei Primzahlen, p und q.",
     "question": "Wie viele Primzahlen sind erforderlich, um φ(n) zu berechnen?",
     "answer": "2"
   },
   {
+    "explanation": "Der öffentliche Exponent e muss teilerfremd zu φ(n) sein, was bedeutet, dass es nur eine solche Zahl gibt.",
     "question": "Wie viele Zahlen sind teilerfremd zu φ(n), wenn e der öffentliche Exponent ist?",
     "answer": "1"
   }
