@@ -4,10 +4,29 @@ let isLeader = false;
 let quizStartTime = null;
 let timerInterval = null;
 
+function urlParamstest() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const roomcodeurl = urlParams.get('room')
+  if(roomcodeurl) {
+
+  if (currentRoom) {
+    alert('Du bist bereits einem Raum beigetreten.');
+    return;
+  }
+  const participantName = prompt("Wie ist dein name?");
+  const roomCode = roomcodeurl;
+  socket.emit('joinRoom', { participantName, roomCode });
+  }
+}
+
+urlParamstest ();
+
 document.getElementById('create-room-btn').addEventListener('click', () => {
   const leaderName = document.getElementById('leader-name').value;
   socket.emit('createRoom', leaderName);
   isLeader = true;
+
 });
 
 document.getElementById('join-room-btn').addEventListener('click', () => {
@@ -31,6 +50,7 @@ socket.on('roomCreated', (roomCode) => {
   }
   alert(`Raum erstellt! Code: ${roomCode}`);
   console.log(`Raum erstellt: ${roomCode}`);
+  new QRCode(document.getElementById("qrcode"), `https://rsaquiz.onrender.com?room=${roomCode}`);
 });
 
 socket.on('roomJoined', (roomCode) => {

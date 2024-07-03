@@ -22,6 +22,7 @@
       <h2>Raum: <span id="room-name"></span></h2>
     </div>
     <div id="leader-view" style="display:none;">
+      <div id="qrcode"></div>
       <h2>Leader View</h2>
       <div id="participants-list-container">
         <h3>Teilnehmer:</h3>
@@ -50,6 +51,8 @@
   </div>
   <!-- Socket.io Client Library -->
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
   <script src="script.js"></script>
 </body>
 </html>
