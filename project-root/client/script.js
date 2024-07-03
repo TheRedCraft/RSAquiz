@@ -18,6 +18,7 @@ function urlParamstest() {
   const roomCode = roomcodeurl;
   socket.emit('joinRoom', { participantName, roomCode });
   }
+  window.location = "https://rsaquiz.onrender.com"
 }
 
 urlParamstest ();
