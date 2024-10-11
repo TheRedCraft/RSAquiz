@@ -17,8 +17,9 @@ function urlParamstest() {
   const participantName = prompt("Wie ist dein name?");
   const roomCode = roomcodeurl;
   socket.emit('joinRoom', { participantName, roomCode });
+  urlParams.delete("room");
+  history.pushState({}, '', '?' + query)  
   }
-  window.location = "https://rsaquiz.onrender.com"
 }
 
 urlParamstest ();
